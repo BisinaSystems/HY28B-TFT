@@ -25,27 +25,10 @@ void Display::init(
     digitalWrite(_rst, HIGH);
     delay(2);
 
-    digitalWrite(_cs, LOW);                  // Enable LCD
-    writeReg(0xE5, 0x78F0); /* set SRAM internal timing */
-    writeReg(0x02, 0x0700); /* set 1 line inversion OLD 0700*/
-    
-    // if (_orientation == VERTICAL)
-    // {
-    //     writeReg(0x01, 0x0000); /* set Driver Output Control OLD 0100*/
-    //     writeReg(0x03, 0x1038); // Entry mode OLD 1030
-    //     writeReg(0x60, 0x2700); /* Gate Scan Line */
-    //     MAX_X = 240;
-    //     MAX_Y = 320;
-    // }
-    // else
-    // {
-    //     writeReg(0x01, 0x0000); /* set Driver Output Control OLD 0100*/
-    //     writeReg(0x03, 0x1030); // Entry mode
-    //     writeReg(0x60, 0x2700); /* Gate Scan Line */
-    //     MAX_X = 320;
-    //     MAX_Y = 240;
-    // }
-    
+    digitalWrite(_cs, LOW); 
+    writeReg(0xE5, 0x78F0); 
+    writeReg(0x02, 0x0700); 
+
     writeReg(0x04, 0x0000); /* Resize register */
     writeReg(0x08, 0x0207); /* set the back porch and front porch */
     writeReg(0x09, 0x0000); /* set non-display area refresh cycle ISC[3:0] */
@@ -65,13 +48,13 @@ void Display::init(
     /* Dis-charge capacitor power voltage */
     writeReg(0x10, 0x1090); /* SAP, BT[3:0], AP, DSTB, SLP, STB */
     writeReg(0x11, 0x0227); /* Set DC1[2:0], DC0[2:0], VC[2:0] */
-    delay(50);                  /* Delay 50ms */
+    delay(50);              /* Delay 50ms */
     writeReg(0x12, 0x001F);
-    delay(50);                  /* Delay 50ms */
+    delay(50);              /* Delay 50ms */
     writeReg(0x13, 0x1500); /* VDV[4:0] for VCOM amplitude */
     writeReg(0x29, 0x0027); /* 04 VCM[5:0] for VCOMH */
     writeReg(0x2B, 0x000D); /* Set Frame Rate */
-    delay(50);                  /* Delay 50ms */
+    delay(50);              /* Delay 50ms */
     writeReg(0x20, 0x0000); /* GRAM horizontal Address */
     writeReg(0x21, 0x0000); /* GRAM Vertical Address */
 
@@ -103,7 +86,7 @@ void Display::init(
     writeReg(0x83, 0x0000);
     writeReg(0x84, 0x0000);
     writeReg(0x85, 0x0000);
-    
+
     /* -------------- Panel Control ------------------- */
     writeReg(0x90, 0x0010);
     writeReg(0x92, 0x0600);
@@ -124,14 +107,18 @@ void Display::setCursor(unsigned int x, unsigned int y)
     }
 }
 
-void Display::setPoint(unsigned short Xpos, unsigned short Ypos, unsigned short point)
+void Display::setPoint(
+    unsigned short x, 
+    unsigned short y,
+    unsigned short color)
 {
-    if (Xpos >= 320 || Ypos >= 240)
+    if (x >= 320 || y >= 240)
     {
         return;
     }
-    setCursor(Xpos, Ypos);
-    writeReg(0x0022, point);
+
+    setCursor(x, y);
+    writeReg(0x0022, color);
 }
 
 void Display::clear(unsigned short color)
@@ -155,4 +142,51 @@ void Display::clear(unsigned short color)
     }
 
     digitalWrite(_cs, HIGH);
+}
+
+void Display::drawLine(
+    unsigned short x0,
+    unsigned short y0,
+    unsigned short x1,
+    unsigned short y1,
+    unsigned short color)
+{
+    int dx = abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
+    int dy = abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
+    int err = (dx > dy ? dx : -dy) / 2;
+    int e2;
+
+    for (;;)
+    {
+        setPoint(x0, y0, color);
+
+        if (x0 == x1 && y0 == y1) break;
+
+        e2 = err;
+
+        if (e2 > -dx)
+        {
+            err -= dy;
+            x0 += sx;
+        }
+
+        if (e2 < dy)
+        {
+            err += dx;
+            y0 += sy;
+        }
+    }
+}
+
+void Display::drawRectangle(
+    unsigned short x1,
+    unsigned short y1,
+    unsigned short x2,
+    unsigned short y2,
+    unsigned short color)
+{
+    drawLine(x1, y1, x2, y1, color);
+    drawLine(x2, y1, x2, y2, color);
+    drawLine(x2, y2, x1, y2, color);
+    drawLine(x1, y2, x1, y1, color);
 }

@@ -30,17 +30,34 @@ public:
 
     void setCursor(unsigned int x, unsigned int y);
 
-    void setPoint(unsigned short Xpos, unsigned short Ypos, unsigned short point);
+    void setPoint(
+        unsigned short x, 
+        unsigned short y, 
+        unsigned short color);
 
     void clear(unsigned short color = 0x0000);
 
-    void displayOff() {
+    void off() {
         writeReg(0x07, 0x0000);
     };
 
-    void displayOn() {
+    void on() {
         writeReg(0x07, 0x0173);
     };
+
+    void drawLine(
+        unsigned short x0, 
+        unsigned short y0, 
+        unsigned short x1, 
+        unsigned short y1, 
+        unsigned short color);
+
+    void drawRectangle(
+        unsigned short x1, 
+        unsigned short y1, 
+        unsigned short x2, 
+        unsigned short y2, 
+        unsigned short color);        
 
 private:
     SPIClass *_spi;
