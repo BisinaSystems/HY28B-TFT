@@ -1,12 +1,12 @@
-#HY28B-TFT
+# HY28B-TFT
 ---
-##Description
+## Description
 
 This is a simple display driver for the HY28B module, which uses the ILI9320 TFT display.
 
 
-##License
-###MIT License
+## License
+### MIT License
 
 Copyright (c) 2024 BisinaSystems
 
