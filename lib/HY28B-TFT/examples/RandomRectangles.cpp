@@ -43,4 +43,6 @@ void loop() {
   display.drawLine(x2, y1, x2, y2, c);
   display.drawLine(x2, y2, x1, y2, c);
   display.drawLine(x1, y2, x1, y1, c);
+
+  display.drawRectangle(x1, y1, x2, y2, c);
 }
