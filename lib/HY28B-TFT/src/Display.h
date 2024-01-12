@@ -10,10 +10,17 @@ enum Orientation
     HORIZONTAL
 } typedef Orientation;
 
+/**
+ * @brief Display driver for the HY28B-TFT LCD
+ * 
+ */
 class Display
 {
 public:
 
+    /** 
+     * @brief Initializes the display driver.
+     */
     void init(
         SPIClass *spi,
         uint8_t cs,
@@ -26,6 +33,14 @@ public:
     void setPoint(unsigned short Xpos, unsigned short Ypos, unsigned short point);
 
     void clear(unsigned short color = 0x0000);
+
+    void displayOff() {
+        writeReg(0x07, 0x0000);
+    };
+
+    void displayOn() {
+        writeReg(0x07, 0x0173);
+    };
 
 private:
     SPIClass *_spi;

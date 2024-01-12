@@ -1,6 +1,6 @@
 {
     "name": "HY28B-TFT",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Simple display driver for the HY28B module, which uses the ILI9320 TFT display.",
     "keywords": "hy28b, ili9320, 9320, lcd, display",
     "repository":
