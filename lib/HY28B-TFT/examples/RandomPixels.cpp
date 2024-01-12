@@ -1,3 +1,7 @@
+/**
+ * Draws random colored pixels on an HY28B-TFT display
+ */
+
 #include <Arduino.h>
 #include <SPI.h>
 

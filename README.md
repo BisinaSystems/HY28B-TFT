@@ -4,6 +4,9 @@
 
 This is a simple display driver for the HY28B module, which uses the ILI9320 TFT display.
 
+## Attribution
+
+Code adapted from INO file in this repo: https://github.com/topogigio/HY28A-LCDB_HY28B-ESP32-driver/tree/master
 
 ## License
 ### MIT License
