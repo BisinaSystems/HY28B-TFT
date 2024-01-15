@@ -1,5 +1,5 @@
 /**
- * Draws rectangle with some 16x16 text (32px height on font) on the HY28B-TFT display
+ * Draws rectangle with some 8x12 text on the HY28B-TFT display
  */
 
 #include <Arduino.h>
