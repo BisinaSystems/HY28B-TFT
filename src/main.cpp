@@ -32,6 +32,11 @@ void setup() {
 
 void loop() {
   display.drawRectangle(10, 10, 309, 229, Color::white);
-  display.drawText(20, 20, "Hello 16x16 Font!", Color::orchid, Color::black);
+
+  display.drawTextSmall(20, 20, "Hello 8x12 Red", Color::red, Color::black);
+  display.drawTextSmall(20, 40, "Hello 8x12 Green", Color::green, Color::black);
+  display.drawTextSmall(20, 60, "Hello 8x12 Blue", Color::blue, Color::black);
+  display.drawTextSmall(20, 80, "Hello 8x12 Olive", Color::olive, Color::black);
+  display.drawTextSmall(20, 100, "Hello 8x12 Olive (RGB)", RGB565CONVERT(128, 128, 0), Color::black);
   delay(2000);
 }

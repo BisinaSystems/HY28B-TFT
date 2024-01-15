@@ -62,41 +62,6 @@ public:
         unsigned short y2,
         unsigned short color);
 
-    void putChar32(uint16_t Xpos, uint16_t Ypos, int ASCI, uint16_t charColor, uint16_t bkColor)
-    {
-        uint16_t i, j;
-        uint8_t tmp_char;
-        unsigned int offset = ASCI;
-        for (i = 0; i < 32; i++)
-        {
-            tmp_char = pgm_read_word(&chlib[offset + i]);
-            for (j = 0; j < 8; j++)
-            {
-                if ((tmp_char >> 7 - j) & 0x01 == 0x01)
-                {
-                    setPoint(Xpos + j, Ypos + i, charColor); /* Character color */
-                }
-                else
-                {
-                    setPoint(Xpos + j, Ypos + i, bkColor); /* Background color */
-                }
-            }
-            i++;
-            tmp_char = pgm_read_word(&chlib[offset + i]);
-            for (j = 0; j < 8; j++)
-            {
-                if ((tmp_char >> 7 - j) & 0x01 == 0x01)
-                {
-                    setPoint(Xpos + j + 8, Ypos + i - 1, charColor); /* Character color */
-                }
-                else
-                {
-                    setPoint(Xpos + j + 8, Ypos + i - 1, bkColor); /* Background color */
-                }
-            }
-        }
-    }
-
     void drawText(uint16_t Xpos, uint16_t Ypos, const char *str, uint16_t Color, uint16_t bkColor)
     {
         int l = 0;
@@ -116,6 +81,35 @@ public:
             {
                 Xpos = 10;
                 Ypos += 32;
+            }
+            else
+            {
+                Xpos = 0;
+                Ypos = 0;
+            }
+        } while (l < strlen(str));
+    }
+
+    void drawTextSmall(uint16_t Xpos, uint16_t Ypos, const char *str, uint16_t Color, uint16_t bkColor)
+    {
+        int l = 0;
+        uint16_t v;
+        unsigned int Chnum = 0;
+
+        do
+        {
+            v = *(str + l);
+            l++;
+            Chnum = (v - 32) * 12;
+            putChar(Xpos, Ypos, Chnum, Color, bkColor);
+            if (Xpos < 320 - 16)
+            {
+                Xpos += 8;
+            }
+            else if (Ypos < 240 - 12)
+            {
+                Xpos = 10;
+                Ypos += 24;
             }
             else
             {
@@ -296,22 +290,59 @@ private:
         digitalWrite(_cs, LOW);
     }
 
-    void drawChar(int x, int y, char ch, uint16_t color, int width = 7, int height = 12)
+    void putChar32(uint16_t Xpos, uint16_t Ypos, int ASCI, uint16_t charColor, uint16_t bkColor)
     {
-        int charIndex = ch - 32;                             // Assuming ASCII and starting from space character
-        int bitmapOffset = charIndex * (width * height / 8); // Calculate the offset in the bitmap array
-
-        for (int row = 0; row < height; ++row)
+        uint16_t i, j;
+        uint8_t tmp_char;
+        unsigned int offset = ASCI;
+        for (i = 0; i < 32; i++)
         {
-            for (int col = 0; col < width; ++col)
+            tmp_char = pgm_read_word(&chlib[offset + i]);
+            for (j = 0; j < 8; j++)
             {
-                int byteIndex = bitmapOffset + (row * width + col) / 8;
-                int bitIndex = col % 8;
-                uint8_t bitmapByte = pgm_read_byte(&chlib[byteIndex]);
-
-                if (bitmapByte & (1 << bitIndex))
+                if ((tmp_char >> 7 - j) & 0x01 == 0x01)
                 {
-                    setPoint(x + col, y + row, color);
+                    setPoint(Xpos + j, Ypos + i, charColor); /* Character color */
+                }
+                else
+                {
+                    setPoint(Xpos + j, Ypos + i, bkColor); /* Background color */
+                }
+            }
+            i++;
+            tmp_char = pgm_read_word(&chlib[offset + i]);
+            for (j = 0; j < 8; j++)
+            {
+                if ((tmp_char >> 7 - j) & 0x01 == 0x01)
+                {
+                    setPoint(Xpos + j + 8, Ypos + i - 1, charColor); /* Character color */
+                }
+                else
+                {
+                    setPoint(Xpos + j + 8, Ypos + i - 1, bkColor); /* Background color */
+                }
+            }
+        }
+    }
+
+    void putChar(uint16_t Xpos, uint16_t Ypos, int ASCI, uint16_t charColor, uint16_t bkColor)
+    {
+
+        uint16_t i, j;
+        unsigned int offset = ASCI;
+        uint8_t tmp_char;
+        for (i = 0; i < 12; i++)
+        {
+            tmp_char = pgm_read_word(&Smalls[offset + i]);
+            for (j = 0; j < 8; j++)
+            {
+                if ((tmp_char >> 7 - j) & 0x01 == 0x01)
+                {
+                    setPoint(Xpos + j, Ypos + i, charColor);
+                }
+                else
+                {
+                    setPoint(Xpos + j, Ypos + i, bkColor);
                 }
             }
         }

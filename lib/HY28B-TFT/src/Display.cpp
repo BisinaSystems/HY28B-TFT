@@ -110,7 +110,7 @@ void Display::setCursor(unsigned int x, unsigned int y)
 void Display::setPoint(
     unsigned short x, 
     unsigned short y,
-    unsigned short color)
+    uint16_t color)
 {
     if (x >= 320 || y >= 240)
     {
